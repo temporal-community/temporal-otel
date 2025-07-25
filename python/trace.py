@@ -1,28 +1,47 @@
 from opentelemetry import trace
+from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter,
+    SpanProcessor,
+)
 from opentelemetry.semconv.attributes import service_attributes
 
+from python.settings import settings
 
-def create_tracing_pipeline() -> BatchSpanProcessor:
-    console_exporter = ConsoleSpanExporter()
-    span_processor = BatchSpanProcessor(console_exporter)
-    return span_processor
+
+def create_processors() -> list[SpanProcessor]:
+    return [
+        BatchSpanProcessor(ConsoleSpanExporter()),
+        BatchSpanProcessor(
+            OTLPSpanExporter(
+                endpoint=settings.OTLP_TRACE_ENDPOINT,
+                insecure=True,
+            )
+        ),
+    ]
 
 
 def create_tracer() -> trace.Tracer:
     """Create a tracer."""
     SERVICE_NAME = "temporal"
+    # Create resource attributes and create a tracer provider
     rc = Resource.create(
         {
             service_attributes.SERVICE_NAME: SERVICE_NAME,
         }
     )
-    processor = create_tracing_pipeline()
     provider = TracerProvider(resource=rc)
-    provider.add_span_processor(processor)
+
+    # Create processors and add them to the tracer provider
+    processors = create_processors()
+    for processor in processors:
+        provider.add_span_processor(processor)
+
+    # Set the tracer provider
     trace.set_tracer_provider(provider)
 
     return trace.get_tracer(SERVICE_NAME)
