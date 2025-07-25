@@ -26,6 +26,20 @@ services:
     environment:
       - TEMPORAL_HOST=temporal:7233
 
+  # Reference: https://www.jaegertracing.io/docs/2.8/getting-started/
+  jaeger:
+    container_name: jaeger
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.8.0
+    ports:
+      - "16686:16686"   # Jaeger UI
+      - "4317:4317"   # accept OTLP over gRPC
+      - "4318:4318"   # accept OTLP over HTTP
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - temporal-network
+    restart: unless-stopped
+
 networks:
   temporal-network:
     driver: bridge

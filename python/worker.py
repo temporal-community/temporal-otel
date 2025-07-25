@@ -25,6 +25,7 @@ async def main():
         activities=[http_get],
         activity_executor=ThreadPoolExecutor(2),
     )
+    print(f"Worker started with task queue: {settings.TEMPORAL_TASK_QUEUE}")
     await worker.run()
 
 
