@@ -1,0 +1,18 @@
+services:
+  temporal: # Temporal dev server
+    container_name: temporal
+    build:
+      context: .
+      dockerfile: temporal_cli.Dockerfile
+    command: ["server", "start-dev", "--ip", "0.0.0.0"]
+    ports:
+      - "7233:7233"   # gRPC endpoint
+      - "7234:7234"   # HTTP endpoint for health checks
+      - "8233:8233"   # HTTP endpoint for UI
+      - "60743:60743"   # HTTP endpoint for metrics
+    networks:
+      - temporal-network
+
+networks:
+  temporal-network:
+    driver: bridge
