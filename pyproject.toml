@@ -9,6 +9,7 @@ dependencies = [
     "opentelemetry-api==1.35.0",
     "opentelemetry-instrumentation-aiohttp-client==0.56b0",
     "opentelemetry-sdk==1.35.0",
+    "pydantic-settings==2.10.1",
     "temporalio==1.14.1",
 ]
 

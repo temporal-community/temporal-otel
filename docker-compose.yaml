@@ -13,6 +13,19 @@ services:
     networks:
       - temporal-network
 
+  worker: # Temporal worker
+    container_name: temporal-worker
+    build:
+      context: .
+      dockerfile: temporal_worker.Dockerfile
+    depends_on:
+      - temporal
+    networks:
+      - temporal-network
+    restart: unless-stopped
+    environment:
+      - TEMPORAL_HOST=temporal:7233
+
 networks:
   temporal-network:
     driver: bridge
