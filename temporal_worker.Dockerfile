@@ -31,7 +31,7 @@ COPY --chown=worker:worker pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 # Copy application code
-COPY --chown=worker:worker python/**/*.py ./python/
+COPY --chown=worker:worker python/ ./python/
 
 # Switch to non-root user
 USER worker
@@ -40,4 +40,4 @@ USER worker
 ENV PYTHONPATH=/app
 
 # Run the worker
-CMD ["uv", "run", "--no-dev", "python", "-m", "python.worker"]
+CMD ["uv", "run", "--no-dev", "python", "-m", "python.trace.worker"]
