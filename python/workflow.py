@@ -10,7 +10,7 @@ import aiohttp
 from temporalio import activity, workflow
 from temporalio.client import Client
 
-from python.settings import settings
+from python.common.settings import settings
 
 
 @activity.defn

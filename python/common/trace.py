@@ -10,7 +10,7 @@ from opentelemetry.sdk.trace.export import (
 )
 from opentelemetry.semconv.attributes import service_attributes
 
-from python.settings import settings
+from python.common.settings import settings
 
 
 def create_processors() -> list[SpanProcessor]:

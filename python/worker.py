@@ -5,7 +5,7 @@ from temporalio.client import Client
 from temporalio.contrib.opentelemetry import TracingInterceptor
 from temporalio.worker import Worker
 
-from python.settings import settings
+from python.common.settings import settings
 from python.trace import create_tracer, instrument
 from python.workflow import HttpWorkflow, http_get
 
