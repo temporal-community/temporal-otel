@@ -5,6 +5,7 @@ from temporalio.client import Client
 from temporalio.contrib.opentelemetry import TracingInterceptor
 from temporalio.worker import Worker
 
+from python.common.metrics import create_runtime
 from python.common.settings import settings
 from python.common.trace import create_tracer, instrument
 from python.workflow import HttpWorkflow, http_get
@@ -16,6 +17,7 @@ async def main():
     client = await Client.connect(
         settings.TEMPORAL_HOST,
         interceptors=[TracingInterceptor(tracer=tracer)],
+        runtime=create_runtime(),
     )
 
     worker = Worker(

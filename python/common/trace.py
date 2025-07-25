@@ -18,7 +18,7 @@ def create_processors() -> list[SpanProcessor]:
         BatchSpanProcessor(ConsoleSpanExporter()),
         BatchSpanProcessor(
             OTLPSpanExporter(
-                endpoint=settings.OTLP_TRACE_ENDPOINT,
+                endpoint=settings.OTLP_ENDPOINT,
                 insecure=True,
             )
         ),

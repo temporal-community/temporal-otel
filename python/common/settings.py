@@ -21,9 +21,9 @@ class TemporalSettings(BaseSettings):
 class OpenTelemetrySettings(BaseSettings):
     """Settings for the OpenTelemetry."""
 
-    OTLP_TRACE_ENDPOINT: str = Field(
-        description="OpenTelemetry endpoint to export traces.",
-        default="http://localhost:4318",
+    OTLP_ENDPOINT: str = Field(
+        description="OpenTelemetry endpoint to export OTLP data.",
+        default="http://localhost:4317",
     )
 
 
