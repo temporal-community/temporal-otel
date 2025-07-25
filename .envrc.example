@@ -1,3 +1,4 @@
 # Reference: https://www.dynatrace.com/news/blog/send-opentelemetry-data-to-dynatrace/
 # Required for ingesting Otel data to Dynatrace
+export DYNATRACE_TENANT=<your-dynatrace-tenant>
 export DYNATRACE_API_TOKEN=<your-dynatrace-api-token>
