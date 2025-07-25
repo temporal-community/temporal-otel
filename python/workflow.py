@@ -10,7 +10,7 @@ import aiohttp
 from temporalio import activity, workflow
 from temporalio.client import Client
 
-TASK_QUEUE = "otel-task-queue"
+from python.settings import settings
 
 
 @activity.defn
@@ -44,17 +44,17 @@ class HttpWorkflow:
 
 
 async def main():
-    client = await Client.connect("localhost:7233")
-    for _ in range(100):
+    client = await Client.connect(settings.TEMPORAL_HOST)
+    while True:
         workflow_id = f"http-workflow-{uuid.uuid4()}"
         print(f"Executing workflow: {workflow_id}")
         await client.execute_workflow(
             HttpWorkflow.run,
             "https://httpbin.org/get",
             id=workflow_id,
-            task_queue=TASK_QUEUE,
+            task_queue=settings.TEMPORAL_TASK_QUEUE,
         )
-        await asyncio.sleep(1)
+        await asyncio.sleep(2)
 
 
 if __name__ == "__main__":
