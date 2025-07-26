@@ -1,14 +1,22 @@
 import asyncio
+import logging
 from concurrent.futures import ThreadPoolExecutor
 
 from temporalio.client import Client
 from temporalio.contrib.opentelemetry import TracingInterceptor
 from temporalio.worker import Worker
 
+from python.common.log import create_logging_handler
 from python.common.metrics import create_runtime
 from python.common.settings import settings
 from python.common.trace import create_tracer, instrument
 from python.workflow import HttpWorkflow, http_get
+
+logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger()
+handler = create_logging_handler()
+logger.addHandler(handler)
 
 
 async def main():

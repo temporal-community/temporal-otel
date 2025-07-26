@@ -41,6 +41,13 @@ service:
       processors: [batch]
       exporters: [prometheus]
 
+    # Debugging pipeline
+    logs/debug:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug]
+
+
     # # Dynatrace
     # traces/dynatrace:
     #   receivers: [otlp]
