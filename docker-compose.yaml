@@ -44,6 +44,7 @@ services:
       - "4318:4318"   # OTLP HTTP receiver
     depends_on:
       - jaeger
+      - prometheus
     networks:
       - temporal-network
     restart: unless-stopped
@@ -59,6 +60,23 @@ services:
       - "16686:16686"   # Jaeger UI
     environment:
       - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - temporal-network
+    restart: unless-stopped
+
+  # Reference: https://prometheus.io/docs/prometheus/latest/installation/
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:v3.5.0
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"   # Prometheus web UI
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - temporal-network
     restart: unless-stopped
