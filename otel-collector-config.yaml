@@ -22,17 +22,27 @@ exporters:
     endpoint: "https://${DYNATRACE_TENANT}.live.dynatrace.com/api/v2/otlp"
     headers:
       Authorization: "Api-Token ${DYNATRACE_API_TOKEN}"
+  prometheus: # exposes a Prometheus endpoint
+    endpoint: "0.0.0.0:8889"
+    const_labels:
+      service: "otel-collector"
   debug:
     verbosity: detailed
 
 service:
   pipelines:
-    traces:
+    traces/jaeger:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlp/jaeger]
       # exporters: [otlp/jaeger, otlphttp/dynatrace]
-    metrics:
+
+    metrics/prometheus:
       receivers: [otlp]
-      processors: [cumulativetodelta, batch]
-      exporters: [otlphttp/dynatrace]
+      processors: [batch]
+      exporters: [prometheus]
+
+    # metrics/dynatrace:
+    #   receivers: [otlp]
+    #   processors: [cumulativetodelta, batch]
+    #   exporters: [otlphttp/dynatrace]

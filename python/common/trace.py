@@ -3,11 +3,7 @@ from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExport
 from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (
-    BatchSpanProcessor,
-    ConsoleSpanExporter,
-    SpanProcessor,
-)
+from opentelemetry.sdk.trace.export import BatchSpanProcessor, SpanProcessor
 from opentelemetry.semconv.attributes import service_attributes
 
 from python.common.settings import settings
@@ -15,7 +11,6 @@ from python.common.settings import settings
 
 def create_processors() -> list[SpanProcessor]:
     return [
-        BatchSpanProcessor(ConsoleSpanExporter()),
         BatchSpanProcessor(
             OTLPSpanExporter(
                 endpoint=settings.OTLP_ENDPOINT,
