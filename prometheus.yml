@@ -13,9 +13,3 @@ scrape_configs:
     static_configs:
       - targets: ['otel-collector:8889']
     scrape_interval: 10s
-
-  # Scrape OpenTelemetry Collector's own metrics
-  - job_name: 'otel-collector-internal'
-    static_configs:
-      - targets: ['otel-collector:8888']
-    scrape_interval: 15s

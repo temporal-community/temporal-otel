@@ -31,17 +31,21 @@ exporters:
 
 service:
   pipelines:
+    # Open source observability platform
     traces/jaeger:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlp/jaeger]
-      # exporters: [otlp/jaeger, otlphttp/dynatrace]
-
     metrics/prometheus:
       receivers: [otlp]
       processors: [batch]
       exporters: [prometheus]
 
+    # # Dynatrace
+    # traces/dynatrace:
+    #   receivers: [otlp]
+    #   processors: [batch]
+    #   exporters: [otlphttp/dynatrace]
     # metrics/dynatrace:
     #   receivers: [otlp]
     #   processors: [cumulativetodelta, batch]
