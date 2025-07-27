@@ -7,7 +7,6 @@ receivers:
         endpoint: 0.0.0.0:4318
 
 processors:
-  cumulativetodelta: # required for Dynatrace
   batch:
     timeout: 1s
     send_batch_size: 1024
@@ -18,10 +17,6 @@ exporters:
     endpoint: jaeger:4317
     tls:
       insecure: true
-  otlphttp/dynatrace:
-    endpoint: "https://${DYNATRACE_TENANT}.live.dynatrace.com/api/v2/otlp"
-    headers:
-      Authorization: "Api-Token ${DYNATRACE_API_TOKEN}"
   prometheus: # exposes a Prometheus endpoint
     endpoint: "0.0.0.0:8889"
     const_labels:
@@ -54,20 +49,3 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [elasticsearch]
-
-    # # Debugging pipeline
-    # logs/debug:
-    #   receivers: [otlp]
-    #   processors: [batch]
-    #   exporters: [debug]
-
-
-    # # Dynatrace
-    # traces/dynatrace:
-    #   receivers: [otlp]
-    #   processors: [batch]
-    #   exporters: [otlphttp/dynatrace]
-    # metrics/dynatrace:
-    #   receivers: [otlp]
-    #   processors: [cumulativetodelta, batch]
-    #   exporters: [otlphttp/dynatrace]

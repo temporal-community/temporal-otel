@@ -1,0 +1,36 @@
+# OpenTelemetry Collector configuration for Dynatrace
+# Requires environment variables: DYNATRACE_TENANT and DYNATRACE_API_TOKEN
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  cumulativetodelta: # required for Dynatrace
+  batch:
+    timeout: 1s
+    send_batch_size: 1024
+    send_batch_max_size: 2048
+
+exporters:
+  otlphttp/dynatrace:
+    endpoint: "https://${DYNATRACE_TENANT}.live.dynatrace.com/api/v2/otlp"
+    headers:
+      Authorization: "Api-Token ${DYNATRACE_API_TOKEN}"
+  debug:
+    verbosity: detailed
+
+service:
+  pipelines:
+    traces/dynatrace:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlphttp/dynatrace]
+    metrics/dynatrace:
+      receivers: [otlp]
+      processors: [cumulativetodelta, batch]
+      exporters: [otlphttp/dynatrace]

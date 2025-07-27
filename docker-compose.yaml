@@ -28,33 +28,9 @@ services:
       - TEMPORAL_HOST=temporal:7233
       - OTLP_ENDPOINT=http://otel-collector:4317
 
-  # Reference: https://opentelemetry.io/docs/collector/
-  otel-collector:
-    container_name: otel-collector
-    image: otel/opentelemetry-collector-contrib:0.130.1
-    command: ["--config=/etc/otel-collector-config.yaml"]
-    volumes:
-      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
-    ports:
-      - "1888:1888"   # pprof extension
-      - "8888:8888"   # Prometheus metrics exposed by the collector
-      - "8889:8889"   # Prometheus exporter metrics
-      - "13133:13133" # health_check extension
-      - "4317:4317"   # OTLP gRPC receiver
-      - "4318:4318"   # OTLP HTTP receiver
-    depends_on:
-      - jaeger
-      - prometheus
-      - elasticsearch
-    networks:
-      - temporal-network
-    restart: unless-stopped
-    environment:
-      - DYNATRACE_TENANT=${DYNATRACE_TENANT}
-      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
-
   # Reference: https://www.jaegertracing.io/docs/2.8/getting-started/
   jaeger:
+    profiles: ["default"]
     container_name: jaeger
     image: cr.jaegertracing.io/jaegertracing/jaeger:2.8.0
     ports:
@@ -67,6 +43,7 @@ services:
 
   # Reference: https://prometheus.io/docs/prometheus/latest/installation/
   prometheus:
+    profiles: ["default"]
     container_name: prometheus
     image: prom/prometheus:v3.5.0
     command:
@@ -85,6 +62,7 @@ services:
 
   # Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
   elasticsearch:
+    profiles: ["default"]
     container_name: elasticsearch
     image: elasticsearch:9.0.4
     environment:
@@ -98,6 +76,49 @@ services:
     networks:
       - temporal-network
     restart: unless-stopped
+
+  # Reference: https://opentelemetry.io/docs/collector/
+  otel-collector:
+    profiles: ["default"]
+    container_name: otel-collector
+    image: otel/opentelemetry-collector-contrib:0.130.1
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "8889:8889"   # Prometheus exporter metrics
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+    depends_on:
+      - jaeger
+      - prometheus
+      - elasticsearch
+    networks:
+      - temporal-network
+    restart: unless-stopped
+
+  # Reference: https://opentelemetry.io/docs/collector/
+  otel-collector-dynatrace:
+    profiles: ["dynatrace"]
+    container_name: otel-collector
+    image: otel/opentelemetry-collector-contrib:0.130.1
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel/otel-collector-config-dynatrace.yaml:/etc/otel-collector-config.yaml:ro
+    ports:
+      - "8889:8889"   # Prometheus exporter metrics
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP HTTP receiver
+    depends_on:
+      - jaeger
+      - prometheus
+      - elasticsearch
+    networks:
+      - temporal-network
+    restart: unless-stopped
+    environment:
+      - DYNATRACE_TENANT=${DYNATRACE_TENANT}
+      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
 
 networks:
   temporal-network:
