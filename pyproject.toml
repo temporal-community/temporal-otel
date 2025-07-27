@@ -28,9 +28,9 @@ help = "Run the worker."
 cmd = "python -m python.worker"
 env = { PYTHONPATH = "." }
 
-[tool.poe.tasks.workflow]
-help = "Run the workflow."
-cmd = "python -m python.workflow"
+[tool.poe.tasks.client]
+help = "Run the Workflow client."
+cmd = "python -m python.client"
 env = { PYTHONPATH = "." }
 
 [tool.poe.tasks.up]

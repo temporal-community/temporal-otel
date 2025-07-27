@@ -42,7 +42,7 @@ This project demonstrates how to integrate [Temporal][1] with [OpenTelemetry][2]
 1. **Run the demo workflow** (in another new terminal):
 
     ```bash
-    uv run poe workflow
+    uv run poe client
     ```
 
     This continuously executes HTTP workflows every 2 seconds. You'll see workflow IDs being printed.

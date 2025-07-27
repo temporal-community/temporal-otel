@@ -1,16 +1,11 @@
 """
-Basic example of using structlog with Temporal.
+Basic example of using Temporal with OpenTelemetry.
 """
 
-import asyncio
-import uuid
 from datetime import timedelta
 
 import aiohttp
 from temporalio import activity, workflow
-from temporalio.client import Client
-
-from python.common.settings import settings
 
 
 @activity.defn
@@ -41,21 +36,3 @@ class HttpWorkflow:
             url,
             start_to_close_timeout=timedelta(seconds=3),
         )
-
-
-async def main():
-    client = await Client.connect(settings.TEMPORAL_HOST)
-    while True:
-        workflow_id = f"http-workflow-{uuid.uuid4()}"
-        print(f"Executing workflow: {workflow_id}")
-        await client.execute_workflow(
-            HttpWorkflow.run,
-            "https://httpbin.org/get",
-            id=workflow_id,
-            task_queue=settings.TEMPORAL_TASK_QUEUE,
-        )
-        await asyncio.sleep(2)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
