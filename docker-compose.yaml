@@ -11,6 +11,18 @@ x-worker-base: &worker-base
     - TEMPORAL_HOST=temporal:7233
     - OTLP_ENDPOINT=http://otel-collector:4317
 
+x-otel-collector-base: &otel-collector-base
+  container_name: otel-collector
+  image: otel/opentelemetry-collector-contrib:0.130.1
+  command: ["--config=/etc/otel-collector-config.yaml"]
+  ports:
+    - "8889:8889"   # Prometheus exporter metrics
+    - "4317:4317"   # OTLP gRPC receiver
+    - "4318:4318"   # OTLP HTTP receiver
+  networks:
+    - temporal-network
+  restart: unless-stopped
+
 services:
   temporal: # Temporal dev server
     container_name: temporal
@@ -91,39 +103,21 @@ services:
 
   # Reference: https://opentelemetry.io/docs/collector/
   otel-collector:
+    <<: *otel-collector-base
     profiles: ["default"]
-    container_name: otel-collector
-    image: otel/opentelemetry-collector-contrib:0.130.1
-    command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
       - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
-    ports:
-      - "8889:8889"   # Prometheus exporter metrics
-      - "4317:4317"   # OTLP gRPC receiver
-      - "4318:4318"   # OTLP HTTP receiver
     depends_on:
       - jaeger
       - prometheus
       - elasticsearch
-    networks:
-      - temporal-network
-    restart: unless-stopped
 
   # Reference: https://opentelemetry.io/docs/collector/
   otel-collector-dynatrace:
+    <<: *otel-collector-base
     profiles: ["dynatrace"]
-    container_name: otel-collector
-    image: otel/opentelemetry-collector-contrib:0.130.1
-    command: ["--config=/etc/otel-collector-config.yaml"]
     volumes:
       - ./otel/otel-collector-config-dynatrace.yaml:/etc/otel-collector-config.yaml:ro
-    ports:
-      - "8889:8889"   # Prometheus exporter metrics
-      - "4317:4317"   # OTLP gRPC receiver
-      - "4318:4318"   # OTLP HTTP receiver
-    networks:
-      - temporal-network
-    restart: unless-stopped
     environment:
       - DYNATRACE_TENANT=${DYNATRACE_TENANT}
       - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
