@@ -1,3 +1,16 @@
+# Base worker configuration
+x-worker-base: &worker-base
+  container_name: temporal-worker
+  build:
+    context: .
+    dockerfile: temporal_worker.Dockerfile
+  networks:
+    - temporal-network
+  restart: unless-stopped
+  environment:
+    - TEMPORAL_HOST=temporal:7233
+    - OTLP_ENDPOINT=http://otel-collector:4317
+
 services:
   temporal: # Temporal dev server
     container_name: temporal
@@ -13,20 +26,19 @@ services:
     networks:
       - temporal-network
 
-  worker: # Temporal worker
-    container_name: temporal-worker
-    build:
-      context: .
-      dockerfile: temporal_worker.Dockerfile
+  worker-default:
+    <<: *worker-base
+    profiles: ["default"]
     depends_on:
       - temporal
       - otel-collector
-    networks:
-      - temporal-network
-    restart: unless-stopped
-    environment:
-      - TEMPORAL_HOST=temporal:7233
-      - OTLP_ENDPOINT=http://otel-collector:4317
+
+  worker-dynatrace:
+    <<: *worker-base
+    profiles: ["dynatrace"]
+    depends_on:
+      - temporal
+      - otel-collector-dynatrace
 
   # Reference: https://www.jaegertracing.io/docs/2.8/getting-started/
   jaeger:
@@ -109,10 +121,6 @@ services:
       - "8889:8889"   # Prometheus exporter metrics
       - "4317:4317"   # OTLP gRPC receiver
       - "4318:4318"   # OTLP HTTP receiver
-    depends_on:
-      - jaeger
-      - prometheus
-      - elasticsearch
     networks:
       - temporal-network
     restart: unless-stopped
