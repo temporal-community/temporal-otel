@@ -1,10 +1,104 @@
 # Temporal OpenTelemetry Samples
 
-This is a collection of samples showing how to use [Temporal SDKs][1] with [OpenTelemetry][2].
+This project demonstrates how to integrate [Temporal][1] with [OpenTelemetry][2] for complete observability of your workflow executions.
+
+## What You'll Get
+
+- **Complete observability stack**: OpenTelemetry traces, metrics, and logs
+- **Temporal Workflow**: HTTP GET workflow with full telemetry instrumentation
+- **OpenTelemetry Collector**: Central hub for processing and routing telemetry data
+- **Two deployment options**:
+  - Open-source tools (Jaeger, Prometheus, and Elasticsearch)
+  - Dynatrace
 
 ## Usage
 
-Working in progress 🚧
+### Prerequisites
+
+- [uv](https://docs.astral.sh/uv/getting-started/installation/)
+- [Docker](https://docs.docker.com/engine/install/)
+
+### Quick Start
+
+1. **Install Python and dependencies:**
+
+    ```bash
+    # Install Python 3.12 if needed
+    uv python install 3.12
+
+    # Install all project dependencies
+    uv sync --dev
+    ```
+
+1. **Start the observability stack:**
+
+    ```bash
+    # Starts Temporal server + Jaeger + Prometheus + Elasticsearch + OTEL Collector
+    uv run poe up
+    ```
+
+    Wait for all services to start (about 30-60 seconds). You'll see logs from multiple containers.
+
+1. **Run the demo workflow** (in another new terminal):
+
+    ```bash
+    uv run poe workflow
+    ```
+
+    This continuously executes HTTP workflows every 2 seconds. You'll see workflow IDs being printed.
+
+### Explore Your Telemetry Data
+
+Now that everything is running, explore the observability data:
+
+#### 🔍 **Distributed Traces** → [Jaeger][3]
+
+- Go to [http://localhost:16686/](http://localhost:16686/)
+- Click "Find Traces" to see traces
+- Click on any trace to see the complete Temporal Workflow → Activity call chain
+
+#### 📊 **Metrics** → [Prometheus][4]
+
+- Go to [http://localhost:9090/](http://localhost:9090/)
+- Try queries like:
+  - `temporal_workflow_completed_total` - completed workflows
+  - `temporal_worker_task_slots_available` - available execution slots in Worker
+
+#### 📝 **Logs** → [Elasticsearch][5]
+
+- Query logs: `curl http://localhost:9200/temporal-logs/_search | jq`
+- Or browse with: `curl http://localhost:9200/_cat/indices`
+
+#### ⚙️ **Temporal UI** → [Temporal Web](http://localhost:8233/)
+
+- Go to [http://localhost:8233/](http://localhost:8233/)
+- View running workflows, activity history, and task queues
+
+### Deployment Options
+
+#### Default Profile (Open Source)
+
+```bash
+uv run poe up  # or explicitly: uv run poe up default
+```
+
+Uses Jaeger + Prometheus + Elasticsearch for observability.
+
+#### Dynatrace Profile
+
+```bash
+# Set your Dynatrace credentials
+export DYNATRACE_TENANT=your-tenant.live.dynatrace.com
+export DYNATRACE_API_TOKEN=your-api-token
+
+# Start with Dynatrace backend
+uv run poe up dynatrace
+```
+
+Sends all telemetry data directly to Dynatrace instead of local tools.
 
 [1]: https://docs.temporal.io/encyclopedia/temporal-sdks#official-sdks
 [2]: https://opentelemetry.io/docs/
+[3]: https://www.jaegertracing.io/
+[4]: https://prometheus.io/
+[5]: https://www.elastic.co/elasticsearch

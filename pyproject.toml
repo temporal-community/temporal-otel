@@ -20,8 +20,11 @@ dev = [
     "ruff>=0.12.5",
 ]
 
+[tool.poe]
+executor.type = "uv"
+
 [tool.poe.tasks.worker]
-help = "Run the trace worker."
+help = "Run the worker."
 cmd = "python -m python.worker"
 env = { PYTHONPATH = "." }
 
@@ -29,3 +32,10 @@ env = { PYTHONPATH = "." }
 help = "Run the workflow."
 cmd = "python -m python.workflow"
 env = { PYTHONPATH = "." }
+
+[tool.poe.tasks.up]
+help = "Start Docker Compose with specified profile."
+cmd = "docker compose --profile ${profile} up --build"
+args = [
+  { name = "profile", help = "Profiles to use (`default` or `dynatrace`).", default = "default"}
+]
