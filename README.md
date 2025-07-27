@@ -74,28 +74,15 @@ Now that everything is running, explore the observability data:
 - Go to [http://localhost:8233/](http://localhost:8233/)
 - View running workflows, activity history, and task queues
 
-### 🛠️ Deployment Options
+## 🛠️ Deployment Options
 
-#### Default Profile (Open Source)
+By default, this project uses open-source observability platforms (Jaeger, Prometheus, and Elasticsearch)
+to storage Temporal traces, metrics, and logs.
 
-```bash
-uv run poe up  # or explicitly: uv run poe up default
-```
+To learn more about how this solution works with third-party observability vendors,
+use the following step-by-step instructions:
 
-Uses Jaeger + Prometheus + Elasticsearch for observability.
-
-#### Dynatrace Profile
-
-```bash
-# Set your Dynatrace credentials
-export DYNATRACE_TENANT=your-tenant.live.dynatrace.com
-export DYNATRACE_API_TOKEN=your-api-token
-
-# Start with Dynatrace backend
-uv run poe up dynatrace
-```
-
-Sends all telemetry data directly to Dynatrace instead of local tools.
+1. [Dynatrace](docs/dynatrace.md)
 
 [1]: https://docs.temporal.io/encyclopedia/temporal-sdks#official-sdks
 [2]: https://opentelemetry.io/docs/
