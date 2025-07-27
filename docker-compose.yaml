@@ -82,6 +82,22 @@ services:
       - temporal-network
     restart: unless-stopped
 
+  # Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:9.0.4
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - "9200:9200"   # Elasticsearch HTTP API
+      - "9300:9300"   # Elasticsearch transport port
+    networks:
+      - temporal-network
+    restart: unless-stopped
+
 networks:
   temporal-network:
     driver: bridge
