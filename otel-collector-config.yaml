@@ -26,6 +26,16 @@ exporters:
     endpoint: "0.0.0.0:8889"
     const_labels:
       service: "otel-collector"
+  elasticsearch:
+    endpoints: ["http://elasticsearch:9200"]
+    logs_index: "temporal-logs"
+    mapping:
+      mode: "raw"
+    retry:
+      enabled: true
+      max_requests: 5
+      initial_interval: 100ms
+      max_interval: 1s
   debug:
     verbosity: detailed
 
@@ -40,12 +50,16 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [prometheus]
-
-    # Debugging pipeline
-    logs/debug:
+    logs/elasticsearch:
       receivers: [otlp]
       processors: [batch]
-      exporters: [debug]
+      exporters: [elasticsearch]
+
+    # # Debugging pipeline
+    # logs/debug:
+    #   receivers: [otlp]
+    #   processors: [batch]
+    #   exporters: [debug]
 
 
     # # Dynatrace

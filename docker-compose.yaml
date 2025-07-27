@@ -45,6 +45,7 @@ services:
     depends_on:
       - jaeger
       - prometheus
+      - elasticsearch
     networks:
       - temporal-network
     restart: unless-stopped
