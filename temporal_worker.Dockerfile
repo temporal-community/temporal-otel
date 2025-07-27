@@ -40,4 +40,4 @@ USER worker
 ENV PYTHONPATH=/app
 
 # Run the worker
-CMD ["uv", "run", "--no-dev", "python", "-m", "python.trace.worker"]
+CMD ["uv", "run", "--no-dev", "python", "-m", "python.worker"]

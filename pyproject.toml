@@ -20,9 +20,9 @@ dev = [
     "ruff>=0.12.5",
 ]
 
-[tool.poe.tasks.trace_worker]
+[tool.poe.tasks.worker]
 help = "Run the trace worker."
-cmd = "python -m python.trace"
+cmd = "python -m python.worker"
 env = { PYTHONPATH = "." }
 
 [tool.poe.tasks.workflow]
