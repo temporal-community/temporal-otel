@@ -2,14 +2,14 @@
 
 This project demonstrates how to integrate [Temporal][1] with [OpenTelemetry][2] for complete observability of your workflow executions. It includes:
 
-> 💡 **New to OpenTelemetry?** Check out our [OpenTelemetry Primer](docs/opentelemetry-primer.md) to understand the concepts, benefits, and why it matters for Temporal developers.
-
 - 📊 **Complete observability stack**: OpenTelemetry traces, metrics, and logs
 - ⚡ **Temporal Workflow**: HTTP GET workflow with full telemetry instrumentation
 - 🔄 **OpenTelemetry Collector**: Central hub for processing and routing telemetry data
 - 🚀 **Two deployment options**:
   - Open-source tools (Jaeger, Prometheus, and Elasticsearch)
   - Dynatrace
+
+> 💡 **New to OpenTelemetry?** Check out our [OpenTelemetry Primer](docs/opentelemetry-primer.md) to understand the concepts, benefits, and why it matters for Temporal developers.
 
 ## Usage
 
