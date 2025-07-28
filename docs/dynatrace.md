@@ -33,7 +33,7 @@ This guide helps you integrate Temporal Workflows with Dynatrace for complete ob
 
     ```bash
     # This starts Temporal server + OpenTelemetry Collector configured for Dynatrace
-    uv run poe up dynatrace
+    uv run poe up --profile dynatrace
     ```
 
     Wait for all services to start (about 30-60 seconds).
