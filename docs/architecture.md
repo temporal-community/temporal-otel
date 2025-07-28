@@ -72,3 +72,74 @@ The OpenTelemetry Collector serves as a crucial intermediary component that prov
 - **Security**: Can handle authentication/authorization to backends centrally.
 - **Standardization**: Enforces consistent telemetry formats across all applications.
 - **Connection Pooling**: Maintains efficient connections to backends
+
+## How OpenTelemetry integrates with Temporal Workflows
+
+### Distributed Tracing
+
+**Implementation**: Uses Temporal's built-in `TracingInterceptor` to automatically instrument workflow and activity executions.
+
+```python
+# python/worker.py
+from temporalio.contrib.opentelemetry import TracingInterceptor
+
+tracer = create_tracer()
+client = await Client.connect(
+    settings.TEMPORAL_HOST,
+    interceptors=[TracingInterceptor(tracer=tracer)],
+)
+```
+
+**Trace Setup**: Custom tracer creation with OTLP exporter (`python/common/trace.py`):
+
+```python
+# Creates BatchSpanProcessor with OTLPSpanExporter
+processor = BatchSpanProcessor(
+    OTLPSpanExporter(endpoint=settings.OTLP_ENDPOINT, insecure=True)
+)
+```
+
+**Auto-instrumentation**: Third-party libraries are automatically instrumented:
+
+```python
+# python/common/trace.py
+AioHttpClientInstrumentor().instrument()  # HTTP calls in activities
+```
+
+### Application Metrics
+
+**Implementation**: Leverages Temporal's native OpenTelemetry metrics support through runtime configuration.
+
+```python
+# python/common/metrics.py
+Runtime(
+    telemetry=TelemetryConfig(
+        metrics=OpenTelemetryConfig(
+            url=settings.OTLP_ENDPOINT,
+            http=False,  # Uses gRPC transport
+        )
+    )
+)
+```
+
+**Metrics Exported**: Temporal automatically exports Workflow Task, Activity, and Worker metrics to the OpenTelemetry Collector.
+
+### Structured Logging
+
+**Implementation**: Custom logging handler that exports logs via OTLP protocol.
+
+```python
+# python/common/log.py
+logger_provider = LoggerProvider(resource=Resource.create({"service.name": "temporal"}))
+logger_provider.add_log_record_processor(
+    SimpleLogRecordProcessor(OTLPLogExporter(endpoint=settings.OTLP_ENDPOINT))
+)
+```
+
+**Usage**: Standard Python logging enhanced with OpenTelemetry context:
+
+```python
+# python/workflow.py
+workflow.logger.info("Workflow: triggering HTTP GET activity to %s", url)
+activity.logger.info("Activity: making HTTP GET call to %s", url)
+```
