@@ -84,6 +84,9 @@ use the following step-by-step instructions:
 
 1. [Dynatrace](docs/dynatrace.md)
 
+> 🏗️ **Want to understand the architecture?** See our [Architecture Documentation](docs/architecture.md) for a comprehensive overview of how Temporal and OpenTelemetry components work together.
+
+
 [1]: https://docs.temporal.io/encyclopedia/temporal-sdks#official-sdks
 [2]: https://opentelemetry.io/docs/
 [3]: https://www.jaegertracing.io/
