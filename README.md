@@ -86,6 +86,12 @@ use the following step-by-step instructions:
 
 > 🏗️ **Want to understand the architecture?** See our [Architecture Documentation](docs/architecture.md) for a comprehensive overview of how Temporal and OpenTelemetry components work together.
 
+## 🤝 Contributing
+
+We welcome contributions from the community!
+Whether you want to add new OpenTelemetry integrations, improve documentation,
+or enhance existing examples, check out our [Contributing Guide](CONTRIBUTING.md)
+to get started.
 
 [1]: https://docs.temporal.io/encyclopedia/temporal-sdks#official-sdks
 [2]: https://opentelemetry.io/docs/
