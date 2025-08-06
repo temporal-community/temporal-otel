@@ -19,3 +19,6 @@ bin/
 # MacOS
 .DS_Store
 
+# Java
+.gradle
+*.class

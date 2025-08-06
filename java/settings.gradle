@@ -1,0 +1,2 @@
+rootProject.name = 'temporal-otel'
+include 'core'

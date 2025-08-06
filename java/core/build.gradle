@@ -1,0 +1,42 @@
+dependencies {
+    // Temporal SDK
+    implementation "io.temporal:temporal-sdk:$javaSDKVersion"
+    implementation "io.temporal:temporal-opentracing:$javaSDKVersion"
+    testImplementation("io.temporal:temporal-testing:$javaSDKVersion")
+
+    // Needed for SDK related functionality
+    implementation(platform("com.fasterxml.jackson:jackson-bom:2.17.2"))
+    implementation "com.fasterxml.jackson.core:jackson-databind"
+    implementation "com.fasterxml.jackson.core:jackson-core"
+
+    implementation "io.micrometer:micrometer-registry-prometheus"
+
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.6'
+    implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.9.0'
+
+    implementation(platform("io.opentelemetry:opentelemetry-bom:$otelVersion"))
+    implementation "io.opentelemetry:opentelemetry-sdk"
+    implementation "io.opentelemetry:opentelemetry-exporter-jaeger"
+    implementation "io.opentelemetry:opentelemetry-extension-trace-propagators"
+    implementation "io.opentelemetry:opentelemetry-opentracing-shim:$otelVersionAlpha"
+    implementation "io.opentelemetry:opentelemetry-semconv:$otelVersionAlpha"
+    implementation 'io.jaegertracing:jaeger-client:1.8.1'
+
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.mockito:mockito-core:5.12.0"
+
+    testImplementation(platform("org.junit:junit-bom:5.10.3"))
+    testImplementation "org.junit.jupiter:junit-jupiter-api"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine"
+
+    dependencies {
+        errorproneJavac('com.google.errorprone:javac:9+181-r4173-1')
+        errorprone('com.google.errorprone:error_prone_core:2.28.0')
+    }
+}
+
+task execute(type: JavaExec) {
+    mainClass = findProperty("mainClass") ?: ""
+    classpath = sourceSets.main.runtimeClasspath
+}

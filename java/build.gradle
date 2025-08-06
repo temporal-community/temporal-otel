@@ -1,0 +1,60 @@
+plugins {
+    id "net.ltgt.errorprone" version "4.0.1"
+    id 'com.diffplug.spotless' version '6.25.0' apply false
+    id "org.springframework.boot" version "${springBootPluginVersion}"
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'net.ltgt.errorprone'
+    apply plugin: 'com.diffplug.spotless'
+
+    compileJava {
+        options.compilerArgs << "-Werror"
+    }
+
+    java {
+        if(project.property("springBootPluginVersion") == "2.7.13") {
+            sourceCompatibility = JavaVersion.VERSION_11
+            targetCompatibility = JavaVersion.VERSION_11
+        } else {
+            sourceCompatibility = JavaVersion.VERSION_17
+            targetCompatibility = JavaVersion.VERSION_17
+        }
+    }
+
+    ext {
+        otelVersion = '1.30.1'
+        otelVersionAlpha = "${otelVersion}-alpha"
+        javaSDKVersion = '1.28.1'
+        camelVersion = '3.22.1'
+        jarVersion = '1.0.0'
+    }
+
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        mavenCentral()
+    }
+
+    dependencies {
+
+    }
+
+    apply plugin: 'com.diffplug.spotless'
+
+    spotless {
+        java {
+            target 'src/*/java/**/*.java'
+            targetExclude '**/.idea/**'
+            googleJavaFormat('1.24.0')
+        }
+    }
+
+    compileJava.dependsOn 'spotlessApply'
+
+    test {
+        useJUnitPlatform()
+    }
+}
