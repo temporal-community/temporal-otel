@@ -3,8 +3,9 @@
     <!-- Console appender for stdout -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
+            <!-- WorkflowId and ActivityId are keys populated by JavaSDK into MDC context -->
+            <!-- See io.temporal.internal.logging.LoggerTag for a full list of keys -->
+            <pattern>%d{HH:mm:ss.SSS} {%X{WorkflowId} %X{ActivityId}} [%thread] %-5level %logger{36} - %msg %n</pattern>        </encoder>
     </appender>
 
     <root level="INFO">
