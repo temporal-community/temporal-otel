@@ -7,14 +7,14 @@
 
 ## Getting started
 
-To run a Java workflow, run the following command in your terminal.
+1. In a new terminal, run the Worker.
 
     ```bash
-    ./run_workflow.sh <fully-qualified-workflow-name-in-core>
+    ./run_class.sh io.temporal.otel.http.HttpWorker
     ```
 
-For example, you would use the following command to run the [`OtelWorkflow`](./core/src/main/java/io/temporal/otel/http/OtelWorkflow.java).
+1. In a new terminal, run the Starter.
 
     ```bash
-    ./run_workflow.sh io.temporal.otel.http.OtelWorkflow
+    ./run_class.sh io.temporal.otel.http.HttpStarter
     ```
