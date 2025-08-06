@@ -16,5 +16,7 @@ CLASS_FQN=$1 # Fully qualified name of the Java class
 
 echo "Running Java class: ${CLASS_FQN}"
 
-# Run the workflow using gradle
+# Determine the correct path to gradlew based on script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${SCRIPT_DIR}"
 ./gradlew :core:execute -PmainClass="${CLASS_FQN}"
