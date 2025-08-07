@@ -80,4 +80,3 @@ Open a GitHub Issue if you have questions, report a bug, or request for enhancem
 | **Testing** | Add integration tests | Intermediate | `pytest` |
 | **CI/CD** | Improve GitHub Actions workflows | Intermediate | GitHub Actions, Docker |
 | **Documentation** | Improve setup guides, add troubleshooting tips | Beginner | Technical Writing |
-
