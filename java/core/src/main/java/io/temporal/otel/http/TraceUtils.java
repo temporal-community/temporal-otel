@@ -3,7 +3,7 @@ package io.temporal.otel.http;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.context.propagation.TextMapPropagator;
-import io.opentelemetry.exporter.logging.LoggingSpanExporter;
+import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.opentracingshim.OpenTracingShim;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.resources.Resource;
@@ -27,13 +27,12 @@ public class TraceUtils {
         Resource.getDefault()
             .merge(Resource.builder().put(ServiceAttributes.SERVICE_NAME, SERVICE_NAME).build());
 
-    LoggingSpanExporter spanExporter = LoggingSpanExporter.create();
+    OtlpGrpcSpanExporter spanExporter =
+        OtlpGrpcSpanExporter.builder().setEndpoint("http://localhost:4317").build();
 
     SdkTracerProvider tracerProvider =
         SdkTracerProvider.builder()
-            .addSpanProcessor(
-                BatchSpanProcessor.builder(spanExporter)
-                    .build())
+            .addSpanProcessor(BatchSpanProcessor.builder(spanExporter).build())
             .setResource(resource)
             .setSampler(Sampler.alwaysOn())
             .build();
