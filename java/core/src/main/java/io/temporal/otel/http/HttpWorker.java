@@ -2,6 +2,8 @@ package io.temporal.otel.http;
 
 import com.uber.m3.tally.RootScopeBuilder;
 import com.uber.m3.tally.Scope;
+import io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.temporal.client.WorkflowClient;
 import io.temporal.common.reporter.MicrometerClientStatsReporter;
 import io.temporal.opentracing.OpenTracingWorkerInterceptor;
@@ -17,6 +19,10 @@ public class HttpWorker {
   public static final String TASK_QUEUE_NAME = "otel-task-queue";
 
   public static void main(String[] args) {
+    // Configure OpenTelemetry globally for auto-instrumentation (logs)
+    OpenTelemetrySdk openTelemetry = LogUtils.getOpenTelemetry();
+    OpenTelemetryAppender.install(openTelemetry);
+
     // Set OpenTelemetry metrics scope for the Worker
     Scope scope =
         new RootScopeBuilder()
