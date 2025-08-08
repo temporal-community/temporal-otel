@@ -3,7 +3,7 @@ x-worker-base: &worker-base
   container_name: temporal-worker
   build:
     context: .
-    dockerfile: temporal_worker.Dockerfile
+    dockerfile: docker/python_worker.Dockerfile
   networks:
     - temporal-network
   restart: unless-stopped
