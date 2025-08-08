@@ -44,3 +44,8 @@ task execute(type: JavaExec) {
     mainClass = findProperty("mainClass") ?: ""
     classpath = sourceSets.main.runtimeClasspath
 }
+
+task copyRuntimeDependencies(type: Copy) {
+    from configurations.runtimeClasspath
+    into "${project.buildDir}/deps"
+}
