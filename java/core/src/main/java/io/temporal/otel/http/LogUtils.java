@@ -19,12 +19,14 @@ public class LogUtils {
   }
 
   private static OpenTelemetrySdk buildOpenTelemetry() {
+    Settings settings = Settings.getInstance();
+
     Resource resource =
         Resource.getDefault()
             .merge(Resource.builder().put(ServiceAttributes.SERVICE_NAME, SERVICE_NAME).build());
 
     OtlpGrpcLogRecordExporter logExporter =
-        OtlpGrpcLogRecordExporter.builder().setEndpoint("http://localhost:4317").build();
+        OtlpGrpcLogRecordExporter.builder().setEndpoint(settings.getOtlpEndpoint()).build();
 
     SdkLoggerProvider loggerProvider =
         SdkLoggerProvider.builder()

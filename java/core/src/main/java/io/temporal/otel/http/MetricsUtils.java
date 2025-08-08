@@ -9,14 +9,18 @@ public class MetricsUtils {
   private static final String SERVICE_NAME = "temporal-java";
 
   public static OtlpMeterRegistry getMeterRegistry() {
+    Settings settings = Settings.getInstance();
     OtlpConfig otlpConfig =
         new OtlpConfig() {
           @Override
           public String get(String key) {
             return Map.of(
-                    "url", "http://localhost:4317",
-                    "step", "30s",
-                    "resourceAttributes.service.name", SERVICE_NAME)
+                    "url",
+                    settings.getOtlpEndpoint(),
+                    "step",
+                    "30s",
+                    "resourceAttributes.service.name",
+                    SERVICE_NAME)
                 .get(key);
           }
         };

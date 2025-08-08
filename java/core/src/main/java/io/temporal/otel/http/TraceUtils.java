@@ -23,12 +23,14 @@ public class TraceUtils {
   }
 
   private static OpenTracingOptions getTraceOpenTelemetryOptions() {
+    Settings settings = Settings.getInstance();
+
     Resource resource =
         Resource.getDefault()
             .merge(Resource.builder().put(ServiceAttributes.SERVICE_NAME, SERVICE_NAME).build());
 
     OtlpGrpcSpanExporter spanExporter =
-        OtlpGrpcSpanExporter.builder().setEndpoint("http://localhost:4317").build();
+        OtlpGrpcSpanExporter.builder().setEndpoint(settings.getOtlpEndpoint()).build();
 
     SdkTracerProvider tracerProvider =
         SdkTracerProvider.builder()
