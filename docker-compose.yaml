@@ -3,7 +3,7 @@ x-worker-base: &worker-base
   container_name: temporal-worker
   build:
     context: .
-    dockerfile: docker/python_worker.Dockerfile
+    dockerfile: docker/${SDK:-python}_worker.Dockerfile
   networks:
     - temporal-network
   restart: unless-stopped
@@ -34,9 +34,9 @@ services:
     networks:
       - temporal-network
 
-  worker-default:
+  worker-oss:
     <<: *worker-base
-    profiles: ["default"]
+    profiles: ["oss"]
     depends_on:
       - temporal
       - otel-collector
@@ -50,7 +50,7 @@ services:
 
   # Reference: https://www.jaegertracing.io/docs/2.8/getting-started/
   jaeger:
-    profiles: ["default"]
+    profiles: ["oss"]
     container_name: jaeger
     image: cr.jaegertracing.io/jaegertracing/jaeger:2.8.0
     ports:
@@ -63,7 +63,7 @@ services:
 
   # Reference: https://prometheus.io/docs/prometheus/latest/installation/
   prometheus:
-    profiles: ["default"]
+    profiles: ["oss"]
     container_name: prometheus
     image: prom/prometheus:v3.5.0
     command:
@@ -82,7 +82,7 @@ services:
 
   # Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html
   elasticsearch:
-    profiles: ["default"]
+    profiles: ["oss"]
     container_name: elasticsearch
     image: elasticsearch:9.0.4
     environment:
@@ -100,7 +100,7 @@ services:
   # Reference: https://opentelemetry.io/docs/collector/
   otel-collector:
     <<: *otel-collector-base
-    profiles: ["default"]
+    profiles: ["oss"]
     volumes:
       - ./otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml:ro
     depends_on:
