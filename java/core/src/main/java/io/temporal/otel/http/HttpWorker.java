@@ -19,6 +19,8 @@ public class HttpWorker {
   public static final String TASK_QUEUE_NAME = "otel-task-queue";
 
   public static void main(String[] args) {
+    Settings settings = Settings.getInstance();
+
     // Configure OpenTelemetry globally for auto-instrumentation (logs)
     OpenTelemetrySdk openTelemetry = LogUtils.getOpenTelemetry();
     OpenTelemetryAppender.install(openTelemetry);
@@ -29,7 +31,10 @@ public class HttpWorker {
             .reporter(new MicrometerClientStatsReporter(MetricsUtils.getMeterRegistry()))
             .reportEvery(com.uber.m3.util.Duration.ofSeconds(1));
     WorkflowServiceStubsOptions stubOptions =
-        WorkflowServiceStubsOptions.newBuilder().setMetricsScope(scope).build();
+        WorkflowServiceStubsOptions.newBuilder()
+            .setMetricsScope(scope)
+            .setTarget(settings.getTemporalHost())
+            .build();
     WorkflowServiceStubs service = WorkflowServiceStubs.newServiceStubs(stubOptions);
     WorkflowClient client = WorkflowClient.newInstance(service);
 

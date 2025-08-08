@@ -6,13 +6,19 @@ import io.temporal.client.WorkflowOptions;
 import io.temporal.opentracing.OpenTracingClientInterceptor;
 import io.temporal.otel.http.workflow.HttpWorkflow;
 import io.temporal.serviceclient.WorkflowServiceStubs;
+import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 
 public class HttpStarter {
-  private static final WorkflowServiceStubs service = WorkflowServiceStubs.newLocalServiceStubs();
   public static final String TASK_QUEUE_NAME = "otel-task-queue";
   public static final String WORKFLOW_ID = "http-workflow-java";
 
   public static void main(String[] args) {
+    Settings settings = Settings.getInstance();
+
+    WorkflowServiceStubsOptions stubOptions =
+        WorkflowServiceStubsOptions.newBuilder().setTarget(settings.getTemporalHost()).build();
+    WorkflowServiceStubs service = WorkflowServiceStubs.newServiceStubs(stubOptions);
+
     WorkflowClientOptions clientOptions =
         WorkflowClientOptions.newBuilder()
             .setInterceptors(new OpenTracingClientInterceptor(TraceUtils.getTraceOptions()))
