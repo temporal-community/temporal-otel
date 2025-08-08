@@ -76,7 +76,7 @@ env = { PYTHONPATH = "." }
 
 [tool.poe.tasks.up]
 help = "Start Docker Compose with specified profile."
-cmd = "docker compose --profile ${sdk} --profile ${platform} up --build"
+cmd = "./compose.sh --sdk ${sdk} --platform ${platform} --rebuild"
 args = [
   { name = "sdk", help = "Temporal SDK to use (`python` or `java`).", default = "python"},
   { name = "platform", help = "Observability platform to use (`oss` or `dynatrace`).", default = "oss"}
