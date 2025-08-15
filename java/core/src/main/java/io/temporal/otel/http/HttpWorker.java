@@ -9,6 +9,7 @@ import io.temporal.common.reporter.MicrometerClientStatsReporter;
 import io.temporal.opentracing.OpenTracingWorkerInterceptor;
 import io.temporal.otel.http.workflow.HttpActivitiesImpl;
 import io.temporal.otel.http.workflow.HttpWorkflowImpl;
+import io.temporal.otel.utils.Settings;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 import io.temporal.worker.Worker;
@@ -41,7 +42,9 @@ public class HttpWorker {
     // Set OpenTelemetry tracer for the Worker
     WorkerFactoryOptions factoryOptions =
         WorkerFactoryOptions.newBuilder()
-            .setWorkerInterceptors(new OpenTracingWorkerInterceptor(TraceUtils.getTraceOptions()))
+            .setWorkerInterceptors(
+                new OpenTracingWorkerInterceptor(
+                    TraceUtils.getTraceOptions(settings.getOtlpEndpoint())))
             .build();
     WorkerFactory factory = WorkerFactory.newInstance(client, factoryOptions);
     Worker worker = factory.newWorker(TASK_QUEUE_NAME);

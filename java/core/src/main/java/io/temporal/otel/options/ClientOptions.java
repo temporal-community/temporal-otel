@@ -5,6 +5,8 @@ import io.grpc.netty.shaded.io.netty.handler.ssl.SslContextBuilder;
 import io.grpc.netty.shaded.io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
+import io.temporal.opentracing.OpenTracingClientInterceptor;
+import io.temporal.otel.http.TraceUtils; // TODO: move to a separate package
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 import java.io.FileInputStream;
@@ -65,6 +67,10 @@ public class ClientOptions {
     insercureSkipVerifyOption.setRequired(false);
     options.addOption(insercureSkipVerifyOption);
 
+    Option otlpEndpointOption = new Option("otlp-endpoint", true, "Optional OTLP endpoint");
+    otlpEndpointOption.setRequired(false);
+    options.addOption(otlpEndpointOption);
+
     CommandLineParser parser = new DefaultParser();
     HelpFormatter formatter = new HelpFormatter();
     CommandLine cmd = null;
@@ -86,6 +92,7 @@ public class ClientOptions {
     String serverName = cmd.getOptionValue("server-name", "");
     boolean insecureSkipVerify = cmd.hasOption("insecure-skip-verify");
     String apiKey = cmd.getOptionValue("api-key", "");
+    String otlpEndpoint = cmd.getOptionValue("otlp-endpoint", "");
 
     // API key and client cert/key are mutually exclusive
     if (!apiKey.isEmpty() && (!clientCert.isEmpty() || !clientKey.isEmpty())) {
@@ -122,6 +129,12 @@ public class ClientOptions {
     if (!apiKey.isEmpty()) {
       serviceStubOptionsBuilder.setEnableHttps(true);
       serviceStubOptionsBuilder.addApiKey(() -> apiKey);
+    }
+    // Configure OpenTelemetry tracing if OTLP endpoint is provided
+    if (!otlpEndpoint.isEmpty()) {
+      clientOptions =
+          clientOptions.setInterceptors(
+              new OpenTracingClientInterceptor(TraceUtils.getTraceOptions(otlpEndpoint)));
     }
 
     WorkflowServiceStubs service =
