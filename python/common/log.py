@@ -10,7 +10,7 @@ def create_logging_handler() -> LoggingHandler:
     logger_provider = LoggerProvider(
         resource=Resource.create(
             {
-                "service.name": "temporal",
+                "service.name": "temporal-python",
             }
         ),
     )

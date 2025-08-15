@@ -2,9 +2,9 @@ package io.temporal.otel.notification;
 
 import io.temporal.client.WorkflowClient;
 import io.temporal.opentracing.OpenTracingWorkerInterceptor;
-import io.temporal.otel.http.TraceUtils;
 import io.temporal.otel.options.ClientOptions;
 import io.temporal.otel.utils.Settings;
+import io.temporal.otel.utils.TraceUtils;
 import io.temporal.worker.Worker;
 import io.temporal.worker.WorkerFactory;
 import io.temporal.worker.WorkerFactoryOptions;

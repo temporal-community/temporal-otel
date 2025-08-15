@@ -6,6 +6,7 @@ import io.temporal.client.WorkflowOptions;
 import io.temporal.opentracing.OpenTracingClientInterceptor;
 import io.temporal.otel.http.workflow.HttpWorkflow;
 import io.temporal.otel.utils.Settings;
+import io.temporal.otel.utils.TraceUtils;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 
