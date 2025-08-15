@@ -84,6 +84,8 @@ use the following step-by-step instructions:
 
 1. [Dynatrace](docs/dynatrace.md)
 
+To see the OpenTelemetry outputs from Nexus operations, try running the [Nexus sample](./java/README.md#nexus-sample).
+
 > 🏗️ **Want to understand the architecture?** See our [Architecture Documentation](docs/architecture.md) for a comprehensive overview of how Temporal and OpenTelemetry components work together.
 
 ## 🤝 Contributing
