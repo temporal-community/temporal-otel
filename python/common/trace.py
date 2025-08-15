@@ -22,7 +22,7 @@ def create_processors() -> list[SpanProcessor]:
 
 def create_tracer() -> trace.Tracer:
     """Create a tracer."""
-    SERVICE_NAME = "temporal"
+    SERVICE_NAME = "temporal-python"
     # Create resource attributes and create a tracer provider
     rc = Resource.create(
         {

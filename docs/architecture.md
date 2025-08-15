@@ -130,7 +130,7 @@ Runtime(
 
 ```python
 # python/common/log.py
-logger_provider = LoggerProvider(resource=Resource.create({"service.name": "temporal"}))
+logger_provider = LoggerProvider(resource=Resource.create({"service.name": "temporal-python"}))
 logger_provider.add_log_record_processor(
     SimpleLogRecordProcessor(OTLPLogExporter(endpoint=settings.OTLP_ENDPOINT))
 )

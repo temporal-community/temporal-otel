@@ -1,4 +1,4 @@
-package io.temporal.otel.http;
+package io.temporal.otel.utils;
 
 import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
@@ -6,7 +6,6 @@ import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.export.BatchLogRecordProcessor;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.semconv.ServiceAttributes;
-import io.temporal.otel.utils.Settings;
 
 public class LogUtils {
   private static final String SERVICE_NAME = "temporal-java";

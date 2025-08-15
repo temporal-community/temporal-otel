@@ -1,4 +1,4 @@
-package io.temporal.otel.http;
+package io.temporal.otel.utils;
 
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;

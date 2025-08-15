@@ -1,9 +1,8 @@
-package io.temporal.otel.http;
+package io.temporal.otel.utils;
 
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.registry.otlp.OtlpConfig;
 import io.micrometer.registry.otlp.OtlpMeterRegistry;
-import io.temporal.otel.utils.Settings;
 import java.util.Map;
 
 public class MetricsUtils {

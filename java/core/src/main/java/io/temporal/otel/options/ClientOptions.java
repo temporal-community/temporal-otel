@@ -6,7 +6,7 @@ import io.grpc.netty.shaded.io.netty.handler.ssl.util.InsecureTrustManagerFactor
 import io.temporal.client.WorkflowClient;
 import io.temporal.client.WorkflowClientOptions;
 import io.temporal.opentracing.OpenTracingClientInterceptor;
-import io.temporal.otel.http.TraceUtils; // TODO: move to a separate package
+import io.temporal.otel.utils.TraceUtils;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 import java.io.FileInputStream;
