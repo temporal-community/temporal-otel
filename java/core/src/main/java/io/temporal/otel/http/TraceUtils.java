@@ -18,19 +18,17 @@ import io.temporal.opentracing.OpenTracingSpanContextCodec;
 public class TraceUtils {
   private static final String SERVICE_NAME = "temporal-java";
 
-  public static OpenTracingOptions getTraceOptions() {
-    return getTraceOpenTelemetryOptions();
+  public static OpenTracingOptions getTraceOptions(String otlpEndpoint) {
+    return getTraceOpenTelemetryOptions(otlpEndpoint);
   }
 
-  private static OpenTracingOptions getTraceOpenTelemetryOptions() {
-    Settings settings = Settings.getInstance();
-
+  private static OpenTracingOptions getTraceOpenTelemetryOptions(String otlpEndpoint) {
     Resource resource =
         Resource.getDefault()
             .merge(Resource.builder().put(ServiceAttributes.SERVICE_NAME, SERVICE_NAME).build());
 
     OtlpGrpcSpanExporter spanExporter =
-        OtlpGrpcSpanExporter.builder().setEndpoint(settings.getOtlpEndpoint()).build();
+        OtlpGrpcSpanExporter.builder().setEndpoint(otlpEndpoint).build();
 
     SdkTracerProvider tracerProvider =
         SdkTracerProvider.builder()

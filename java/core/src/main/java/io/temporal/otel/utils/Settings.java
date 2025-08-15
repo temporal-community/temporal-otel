@@ -1,4 +1,4 @@
-package io.temporal.otel.http;
+package io.temporal.otel.utils;
 
 public class Settings {
   private static final Settings INSTANCE = new Settings();

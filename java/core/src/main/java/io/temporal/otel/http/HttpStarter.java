@@ -5,6 +5,7 @@ import io.temporal.client.WorkflowClientOptions;
 import io.temporal.client.WorkflowOptions;
 import io.temporal.opentracing.OpenTracingClientInterceptor;
 import io.temporal.otel.http.workflow.HttpWorkflow;
+import io.temporal.otel.utils.Settings;
 import io.temporal.serviceclient.WorkflowServiceStubs;
 import io.temporal.serviceclient.WorkflowServiceStubsOptions;
 
@@ -21,7 +22,9 @@ public class HttpStarter {
 
     WorkflowClientOptions clientOptions =
         WorkflowClientOptions.newBuilder()
-            .setInterceptors(new OpenTracingClientInterceptor(TraceUtils.getTraceOptions()))
+            .setInterceptors(
+                new OpenTracingClientInterceptor(
+                    TraceUtils.getTraceOptions(settings.getOtlpEndpoint())))
             .build();
     WorkflowClient client = WorkflowClient.newInstance(service, clientOptions);
 
