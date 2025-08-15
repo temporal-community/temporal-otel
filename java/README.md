@@ -25,7 +25,7 @@
     ./run_class.sh io.temporal.otel.http.HttpStarter
     ```
 
-## Nexus demo
+## Nexus sample
 
 1. In a terminal, start Docker compose without running the Workers.
 
