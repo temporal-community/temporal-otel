@@ -13,7 +13,7 @@ x-worker-base: &worker-base
 
 x-otel-collector-base: &otel-collector-base
   container_name: otel-collector
-  image: otel/opentelemetry-collector-contrib:0.130.1
+  image: otel/opentelemetry-collector-contrib:0.152.0
   command: ["--config=/etc/otel-collector-config.yaml"]
   ports:
     - "8889:8889"   # Prometheus exporter metrics
@@ -47,6 +47,13 @@ services:
     depends_on:
       - temporal
       - otel-collector-dynatrace
+
+  worker-observe:
+    <<: *worker-base
+    profiles: ["observe"]
+    depends_on:
+      - temporal
+      - otel-collector-observe
 
   # Reference: https://www.jaegertracing.io/docs/2.8/getting-started/
   jaeger:
@@ -115,8 +122,18 @@ services:
     volumes:
       - ./otel/otel-collector-config-dynatrace.yaml:/etc/otel-collector-config.yaml:ro
     environment:
-      - DYNATRACE_TENANT=${DYNATRACE_TENANT}
-      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN}
+      - DYNATRACE_TENANT=${DYNATRACE_TENANT:-}
+      - DYNATRACE_API_TOKEN=${DYNATRACE_API_TOKEN:-}
+
+  # Reference: https://opentelemetry.io/docs/collector/
+  otel-collector-observe:
+    <<: *otel-collector-base
+    profiles: ["observe"]
+    volumes:
+      - ./otel/otel-collector-config-observe.yaml:/etc/otel-collector-config.yaml:ro
+    environment:
+      - OBSERVE_ID=${OBSERVE_ID:-}
+      - OBSERVE_TOKEN=${OBSERVE_TOKEN:-}
 
 networks:
   temporal-network:

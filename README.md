@@ -8,6 +8,7 @@ This project demonstrates how to integrate [Temporal][1] with [OpenTelemetry][2]
 - 🚀 **Two deployment options**:
   - Open-source tools (Jaeger, Prometheus, and Elasticsearch)
   - Dynatrace
+  - Observe
 
 > 💡 **New to OpenTelemetry?** Check out our [OpenTelemetry Primer](docs/opentelemetry-primer.md) to understand the concepts, benefits, and why it matters for Temporal developers.
 
@@ -83,6 +84,7 @@ To learn more about how this solution works with third-party observability vendo
 use the following step-by-step instructions:
 
 1. [Dynatrace](docs/dynatrace.md)
+2. [Observe](docs/observe.md)
 
 To see the OpenTelemetry outputs from Nexus operations, try running the [Nexus sample](./java/README.md#nexus-sample).
 

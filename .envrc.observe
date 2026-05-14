@@ -1,0 +1,4 @@
+# Reference: https://docs.observeinc.com/docs/full-host-example
+# Required for ingesting OTel data to Observe
+OBSERVE_ID=<observe-tenant-id>
+OBSERVE_TOKEN=<observe-ingest-token>

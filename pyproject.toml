@@ -79,5 +79,5 @@ help = "Start Docker Compose with specified profile."
 cmd = "./compose.sh --sdk ${sdk} --platform ${platform} --rebuild"
 args = [
   { name = "sdk", help = "Temporal SDK to use (`python` or `java`).", default = "python"},
-  { name = "platform", help = "Observability platform to use (`oss` or `dynatrace`).", default = "oss"}
+  { name = "platform", help = "Observability platform to use (`oss`, `dynatrace`, or `observe`).", default = "oss"}
 ]

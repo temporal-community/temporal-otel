@@ -1,0 +1,138 @@
+# OpenTelemetry Collector configuration for Observe
+# Requires environment variables: OBSERVE_ID and OBSERVE_TOKEN
+
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  memory_limiter:
+    check_interval: 10s
+    limit_percentage: 80
+    spike_limit_percentage: 15
+  batch/observe/metrics:
+    send_batch_max_size: 20480
+    send_batch_size: 16384
+    timeout: 1s
+  batch/observe/logs:
+    send_batch_max_size: 4096
+    send_batch_size: 4096
+    timeout: 5s
+  batch/observe/traces:
+    send_batch_max_size: 4096
+    send_batch_size: 4096
+    timeout: 5s
+
+  resource/observe_common:
+    attributes:
+      - key: deployment.environment.name
+        action: upsert
+        value: dev
+      - key: service.namespace
+        action: upsert
+        value: default
+      - key: service.version
+        action: upsert
+        value: 0.0.1
+      - key: service.instance.id
+        action: upsert
+        value: localhost
+
+  resourcedetection:
+    detectors: [env, system]
+    system:
+      hostname_sources: ["dns", "os"]
+      resource_attributes:
+        host.id:
+          enabled: true
+        os.type:
+          enabled: true
+        host.arch:
+          enabled: true
+        host.name:
+          enabled: true
+        os.description:
+          enabled: true
+
+exporters:
+  otlp_http/observe/metrics:
+    compression: zstd
+    endpoint: "https://${OBSERVE_ID}.collect.observeinc.com/v2/otel"
+    headers:
+      authorization: "Bearer ${OBSERVE_TOKEN}"
+      x-observe-target-package: Metrics
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_elapsed_time: 5m
+      max_interval: 30s
+    sending_queue:
+      enabled: true
+  otlp_http/observe/traces:
+    compression: zstd
+    endpoint: "https://${OBSERVE_ID}.collect.observeinc.com/v2/otel"
+    headers:
+      authorization: "Bearer ${OBSERVE_TOKEN}"
+      x-observe-target-package: "Tracing"
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_elapsed_time: 5m
+      max_interval: 30s
+    sending_queue:
+      enabled: true
+  otlp_http/observe/logs:
+    compression: zstd
+    endpoint: "https://${OBSERVE_ID}.collect.observeinc.com/v2/otel"
+    headers:
+      authorization: "Bearer ${OBSERVE_TOKEN}"
+      x-observe-target-package: "Host Explorer"
+    retry_on_failure:
+      enabled: true
+      initial_interval: 1s
+      max_elapsed_time: 5m
+      max_interval: 30s
+    sending_queue:
+      enabled: true
+# debug:
+#   verbosity: detailed
+
+service:
+  pipelines:
+    metrics:
+      receivers:
+      - otlp
+      exporters:
+      - otlp_http/observe/metrics
+#     - debug
+      processors:
+      - memory_limiter
+      - batch/observe/metrics
+      - resourcedetection
+      - resource/observe_common
+    traces:
+      receivers:
+      - otlp
+      exporters:
+      - otlp_http/observe/traces
+#     - debug
+      processors:
+      - memory_limiter
+      - batch/observe/traces
+      - resourcedetection
+      - resource/observe_common
+    logs:
+      receivers:
+      - otlp
+      exporters:
+      - otlp_http/observe/logs
+#     - debug
+      processors:
+      - memory_limiter
+      - batch/observe/logs
+      - resourcedetection
+      - resource/observe_common
