@@ -14,7 +14,7 @@ This guide helps you integrate Temporal Workflows with Observe for complete obse
 
 1. In Observe, [create an ingest token][1]
 
-    > If you don't have an Observe account, you can [sign up for a free Dynatrace trial account][2].
+    > If you don't have an Observe account, you can [sign up for a free Observe trial account][2].
 
 1. Set your Observe environment variables in `.envrc` for PowerShell or Bash:
 
@@ -55,9 +55,7 @@ This guide helps you integrate Temporal Workflows with Observe for complete obse
     * Generate traces, metrics, and logs
     * Send all telemetry data to your Observe tenant
 
-    If you don't have `uv` you can install it with `pip install uv`.
-
-## 📊 Exploring Your Data in Dynatrace
+## 📊 Exploring Your Data in Observe
 
 Now that telemetry is flowing, explore your data in Observe.
 
