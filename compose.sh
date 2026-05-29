@@ -3,11 +3,12 @@
 # Temporal OpenTelemetry Demo Startup Script
 # This script starts the Temporal OpenTelemetry demo with specified SDK and platform configurations.
 #
-# Usage: ./start.sh --sdk <python|java> --platform <oss|dynatrace>
+# Usage: ./start.sh --sdk <python|java> --platform <oss|dynatrace|observe>
 #
 # Requirements:
 # - Docker and Docker Compose must be installed
 # - For Dynatrace platform: DYNATRACE_TENANT and DYNATRACE_API_TOKEN environment variables
+# - For Observe platform: OBSERVE_ID and OBSERVE_TOKEN environment variables
 
 set -euo pipefail  # Exit on error, undefined vars, and pipe failures
 
@@ -57,7 +58,7 @@ USAGE:
 
 REQUIRED ARGUMENTS:
     --sdk <SDK>           Temporal SDK to use (python or java)
-    --platform <PLATFORM> Observability platform (oss or dynatrace)
+    --platform <PLATFORM> Observability platform (oss, dynatrace, or observe)
 
 OPTIONS:
     -h, --help           Show this help message and exit
@@ -69,11 +70,12 @@ OPTIONS:
 
 SUPPORTED VALUES:
     SDK: python, java
-    PLATFORM: oss, dynatrace
+    PLATFORM: oss, dynatrace, observe
 
 EXAMPLES:
     $0 --sdk python --platform oss
     $0 --sdk java --platform dynatrace --detached
+    $0 --sdk python --platform observe --detached
     $0 --sdk python --platform oss --rebuild --verbose
     $0 --down
     $0 --logs worker-oss
@@ -81,6 +83,10 @@ EXAMPLES:
 ENVIRONMENT VARIABLES (for Dynatrace):
     DYNATRACE_TENANT     Your Dynatrace tenant ID (required for --platform dynatrace)
     DYNATRACE_API_TOKEN  Your Dynatrace API token (required for --platform dynatrace)
+
+ENVIRONMENT VARIABLES (for Observe):
+    OBSERVE_ID     Your Observe tenant ID (required for --platform observe)
+    OBSERVE_TOKEN  Your Observe Ingest token (required for --platform observe)
 
 EOF
 }
@@ -139,7 +145,7 @@ parse_arguments() {
 # Validate arguments
 validate_arguments() {
     local valid_sdks=("python" "java")
-    local valid_platforms=("oss" "dynatrace")
+    local valid_platforms=("oss" "dynatrace" "observe")
 
     # Check if SDK is provided and valid
     if [[ -z "$SDK" ]]; then
@@ -154,7 +160,7 @@ validate_arguments() {
 
     # Check if PLATFORM is provided and valid
     if [[ -z "$PLATFORM" ]]; then
-        log_error "Platform argument is required. Use --platform <oss|dynatrace>"
+        log_error "Platform argument is required. Use --platform <oss|dynatrace|observe>"
         exit 1
     fi
 
@@ -217,12 +223,38 @@ validate_dynatrace_env() {
     fi
 }
 
+# Validate environment for Observe
+validate_observe_env() {
+    if [[ "$PLATFORM" == "observe" ]]; then
+        local missing_vars=()
+
+        if [[ -z "${OBSERVE_ID:-}" ]]; then
+            missing_vars+=("OBSERVE_ID")
+        fi
+
+        if [[ -z "${OBSERVE_TOKEN:-}" ]]; then
+            missing_vars+=("OBSERVE_TOKEN")
+        fi
+
+        if [[ ${#missing_vars[@]} -gt 0 ]]; then
+            log_error "Observe platform requires the following environment variables:"
+            for var in "${missing_vars[@]}"; do
+                log_error "  $var"
+            done
+            log_error "Please set these variables and try again."
+            exit 1
+        fi
+
+        log_info "Observe configuration validated"
+    fi
+}
+
 # Stop and remove containers
 docker_compose_down() {
     log_info "Stopping and removing containers..."
 
     if docker compose ps --quiet | grep -q .; then
-        docker compose --profile oss --profile dynatrace down --volumes --remove-orphans
+        docker compose --profile oss --profile dynatrace --profile observe down --volumes --remove-orphans
         log_success "Containers stopped and removed"
     else
         log_info "No containers are currently running"
@@ -235,10 +267,10 @@ show_logs() {
 
     if [[ -n "$service" ]]; then
         log_info "Showing logs for service: $service"
-        docker compose --profile oss --profile dynatrace logs --follow "$service"
+        docker compose --profile oss --profile dynatrace --profile observe logs --follow "$service"
     else
         log_info "Showing logs for all services"
-        docker compose --profile oss --profile dynatrace logs --follow
+        docker compose --profile oss --profile dynatrace --profile observe logs --follow
     fi
 }
 
@@ -337,6 +369,9 @@ main() {
 
     # Validate Dynatrace environment if needed
     validate_dynatrace_env
+
+    # Validate Observe environment if needed
+    validate_observe_env
 
     # Start services
     start_services

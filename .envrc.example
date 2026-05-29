@@ -2,3 +2,8 @@
 # Required for ingesting Otel data to Dynatrace
 export DYNATRACE_TENANT=<your-dynatrace-tenant>
 export DYNATRACE_API_TOKEN=<your-dynatrace-api-token>
+
+# Reference: https://docs.observeinc.com/docs/full-host-example
+# Required for ingesting OTel data to Observe
+export OBSERVE_ID=<observe-tenant-id>
+export OBSERVE_TOKEN=<observe-ingest-token>
